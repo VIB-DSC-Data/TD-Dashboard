@@ -60,7 +60,7 @@ performance <- data.frame(Month = factor(c('Aug 2022','Oct 2022', 'Jan 2023'), l
 performance <- performance %>% mutate(Precision = Match / Export)
 y_max <- max(performance %>% select(is.numeric))
 scaleRight <- 100 / y_max
-ggplot(melt(performance %>% select(-Precision)), aes(x = Month)) +
+p <- ggplot(melt(performance %>% select(-Precision)), aes(x = Month)) +
     geom_bar(aes(y = value, fill = variable), color = 'grey',  stat = 'identity', position = "dodge") +
     scale_fill_manual(values=c('#CFFDE1','#68B984')) +
     # scale_fill_grey() +
@@ -81,6 +81,7 @@ ggplot(melt(performance %>% select(-Precision)), aes(x = Month)) +
       legend.spacing = unit(-1, "lines"),
       legend.title=element_blank()) +
   labs( y="# Cust", x="Month")
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
 
 Campaign performance {.tabset}
@@ -119,7 +120,7 @@ Row
 
 ```{r}
 performance <- data.frame(Month = c(8, 9, 10, 11), Tenor = c(3.5,4,5,4.5), Tenor2 = c(NA,3,3.5,4)) 
-ggplot() +
+p<-ggplot() +
 geom_line(data = performance %>% filter(Month <= 9), aes(x = Month, y = Tenor, color = 'Before Campaign'), size = 1 ) +
   geom_text(data = performance %>% filter(Month == max(Month)), aes(x = Month, y = Tenor, label = paste(Tenor,'months'), color = 'During Campaign'), vjust = 1.5) +
 geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = Tenor, color = 'During Campaign'), size = 1) +
@@ -128,13 +129,14 @@ geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = Tenor, co
 scale_color_manual(values = c('grey', 'red','blue'))+
 theme_classic() +
 theme(legend.title=element_blank(), legend.position = 'bottom') + labs(y = 'Tenor (months)')
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
 
 ### Average balance
 
 ```{r}
 performance <- data.frame(Month = c(8, 9, 10, 11), Bal = c(35,40,50,55), Bal2 = c(NA,38,42,47))
-ggplot() +
+p<-ggplot() +
 geom_line(data = performance %>% filter(Month <= 9), aes(x = Month, y = Bal, color = 'Before Campaign'), size = 1 ) +
   geom_text(data = performance %>% filter(Month == max(Month)), aes(x = Month, y = Bal, label = paste(Bal,'M'), color = 'During Campaign'), vjust = 1.5) +
 geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = Bal, color = 'During Campaign'), size = 1) +
@@ -142,13 +144,14 @@ geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = Bal, colo
   geom_text(data = performance %>% filter(Month == max(Month)), aes(x = Month, y = Bal2, label = paste(Bal2, 'M'), color = 'New Acquisition'), vjust = -1.5) +
 scale_color_manual(values = c('grey', 'red','blue'))+
 theme_classic() + theme(legend.position = 'none')+ labs(y = 'Outstanding Balance (M)')
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
 
 ### Average rollover ratio
 
 ```{r}
 performance <- data.frame(Month = c(8, 9, 10, 11), RR = c(35,40,30,25), RR2 = c(NA,39,28,32)) 
-ggplot() +
+p<-ggplot() +
 geom_line(data = performance %>% filter(Month <= 9), aes(x = Month, y = RR, color = 'Before Campaign'), size = 1 ) +
 geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = RR, color = 'During Campaign'), size = 1) +
   geom_text(data = performance %>% filter(Month == max(Month)), aes(x = Month, y = RR, label = paste(RR,'%'), color = 'During Campaign'), vjust = 1.5) +
@@ -156,6 +159,7 @@ geom_line(data = performance %>% filter(Month > 8), aes(x = Month, y = RR, color
   geom_text(data = performance %>% filter(Month == max(Month)), aes(x = Month, y = RR2, label = paste(RR2, '%'), color = 'New Acquisition'), vjust = -1.5) +
 scale_color_manual(values = c('grey', 'red','blue'))+
 theme_classic() + theme(legend.position = 'none') + labs( y = 'Rollover Ratio (%)')
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
 
 Row
@@ -167,12 +171,13 @@ Row
 performance <- data.frame(X = c('New Opening', 'Next opening'),
                           Exist = c(10,20),
                           New = c(3,32))
-performance %>% melt() %>%
+p<- performance %>% melt() %>%
   ggplot(aes(x = X)) +
   geom_bar(aes(y = value, fill = variable), stat = 'identity', position = 'dodge') +
   theme_classic() +
   labs(x = 'Customer segments', y = 'Average elapse (days)') +
   theme(legend.position = 'bottom', legend.title = element_blank())
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
 
 ### TD balance dimension during campaign
@@ -181,10 +186,11 @@ performance %>% melt() %>%
 performance <- data.frame(X = c('New Opening', 'Next opening'),
                           Exist = c(100,150),
                           New = c(80,90))
-performance %>% melt() %>%
+p<- performance %>% melt() %>%
   ggplot(aes(x = X)) +
   geom_bar(aes(y = value, fill = variable), stat = 'identity', position = 'dodge') +
   theme_classic() +
   labs(x = 'Customer segments', y = 'Average TD Balance per cust (M)') +
   theme(legend.position = 'bottom', legend.title = element_blank())
+ggplotly(p, tooltip = c('y','x')) %>% config(displayModeBar = F)
 ```
